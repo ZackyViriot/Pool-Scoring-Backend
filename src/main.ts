@@ -10,10 +10,13 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'https://pool-scoring-frontend.vercel.app',
-      'https://pool-scoring.vercel.app'
+      'https://pool-scoring.vercel.app',
+      'https://pool-scoring-backend-production.up.railway.app'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+    allowedHeaders: 'Content-Type,Accept,Authorization',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
     credentials: false
   });
 
