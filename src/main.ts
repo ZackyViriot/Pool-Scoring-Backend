@@ -16,8 +16,7 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
     credentials: true,
     preflightContinue: false,
-    optionsSuccessStatus: 204,
-    exposedHeaders: ['Authorization']
+    optionsSuccessStatus: 204
   });
 
   app.useGlobalPipes(new ValidationPipe());
