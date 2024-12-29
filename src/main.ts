@@ -11,7 +11,6 @@ async function bootstrap() {
       'http://localhost:3000',
       'https://pool-scoring-frontend.vercel.app',
       'https://pool-scoring.vercel.app',
-      'https://pool-scoring-backend-production.up.railway.app'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Accept,Authorization',
@@ -21,6 +20,6 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(process.env.PORT || 3001);
+  await app.listen(8000);
 }
 bootstrap(); 
