@@ -12,10 +12,9 @@ async function bootstrap() {
       'https://pool-scoring-frontend.vercel.app',
       'https://pool-scoring.vercel.app'
     ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
-    credentials: false,
-    optionsSuccessStatus: 204
+    credentials: false
   });
 
   app.useGlobalPipes(new ValidationPipe());
