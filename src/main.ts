@@ -5,21 +5,28 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Configure CORS
+  // Enable CORS for the specific frontend domain
   app.enableCors({
     origin: [
-      'http://localhost:3000',
+
       'https://pool-scoring-frontend.vercel.app',
-      'https://pool-scoring.vercel.app',
+      'http://localhost:3000'
     ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type,Accept,Authorization',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    credentials: false
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    allowedHeaders: 'Content-Type,Authorization',
   });
 
-  app.useGlobalPipes(new ValidationPipe());
+  // Use global validation pipe with transformation enabled
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
+
   await app.listen(8000);
 }
-bootstrap(); 
+bootstrap();
