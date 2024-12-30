@@ -8,7 +8,7 @@ async function bootstrap() {
   // Enable CORS for the specific frontend domain
   app.enableCors({
     origin: [
-      'http://pool-scoring-frontend.vercel.app',
+      'https://pool-scoring-frontend.vercel.app',
       'http://localhost:3000'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
