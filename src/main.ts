@@ -3,15 +3,18 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
   
-  // Enable CORS with a more permissive configuration
+  const corsOrigin = process.env.CORS_ORIGIN || 'https://pool-scoring-frontend.vercel.app';
+  console.log('CORS Origin:', corsOrigin);
+  
+  // Enable CORS with configuration from environment
   app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type,Accept,Authorization,Origin,X-Requested-With',
-    preflightContinue: false,
-    optionsSuccessStatus: 204
+    origin: corsOrigin,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Origin', 'X-Requested-With'],
+    exposedHeaders: ['Authorization'],
+    credentials: true
   });
 
   // Use global validation pipe with transformation enabled
@@ -25,7 +28,7 @@ async function bootstrap() {
   );
 
   const port = process.env.PORT || 3001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.log(`Application is running on port ${port}`);
 }
 bootstrap();
