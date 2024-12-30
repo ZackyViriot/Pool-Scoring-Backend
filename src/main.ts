@@ -8,12 +8,12 @@ async function bootstrap() {
   // Enable CORS for the specific frontend domain
   app.enableCors({
     origin: [
-      'https://pool-scoring-frontend.vercel.app',
+      'http://pool-scoring-frontend.vercel.app',
       'http://localhost:3000'
     ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
-    allowedHeaders: 'Content-Type,Authorization',
+    allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
   });
 
   // Use global validation pipe with transformation enabled
@@ -27,5 +27,6 @@ async function bootstrap() {
   );
 
   await app.listen(8000);
+  console.log('Application is running on port 8000');
 }
 bootstrap();
