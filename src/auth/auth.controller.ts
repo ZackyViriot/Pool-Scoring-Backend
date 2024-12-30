@@ -36,7 +36,7 @@ export class AuthController {
   }
 
   @Post('create-payment-intent')
-  async createPaymentIntent(@Body() body: { isMonthly: boolean }) {
-    return this.paymentService.createPaymentIntent(body.isMonthly);
+  async createPaymentIntent() {
+    return this.paymentService.createPaymentIntent();
   }
 } 

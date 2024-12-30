@@ -15,41 +15,20 @@ export class PaymentService {
     });
   }
 
-  async createPaymentIntent(isMonthly: boolean = false): Promise<{ clientSecret: string }> {
+  async createPaymentIntent(): Promise<{ clientSecret: string }> {
     try {
-      console.log('Creating payment intent, type:', isMonthly ? 'monthly' : 'one-time');
+      console.log('Creating one-time payment intent');
       
-      if (isMonthly) {
-        // Create a subscription
-        const customer = await this.stripe.customers.create();
-        console.log('Created customer:', customer.id);
-        
-        const subscription = await this.stripe.subscriptions.create({
-          customer: customer.id,
-          items: [{ price: this.configService.get<string>('STRIPE_MONTHLY_PRICE_ID') }],
-          payment_behavior: 'default_incomplete',
-          expand: ['latest_invoice.payment_intent'],
-        });
-        console.log('Created subscription:', subscription.id);
+      // Create a one-time payment
+      const paymentIntent = await this.stripe.paymentIntents.create({
+        amount: 1000, // $10.00 in cents
+        currency: 'usd',
+      });
+      console.log('Created one-time payment intent:', paymentIntent.id);
 
-        const invoice = subscription.latest_invoice as Stripe.Invoice;
-        const paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
-
-        return {
-          clientSecret: paymentIntent.client_secret,
-        };
-      } else {
-        // Create a one-time payment
-        const paymentIntent = await this.stripe.paymentIntents.create({
-          amount: 100, // $1.00 in cents
-          currency: 'usd',
-        });
-        console.log('Created one-time payment intent:', paymentIntent.id);
-
-        return {
-          clientSecret: paymentIntent.client_secret,
-        };
-      }
+      return {
+        clientSecret: paymentIntent.client_secret,
+      };
     } catch (error) {
       console.error('Error in createPaymentIntent:', error);
       throw new UnauthorizedException('Error creating payment intent: ' + error.message);
