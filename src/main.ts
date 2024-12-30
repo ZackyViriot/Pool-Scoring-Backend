@@ -9,11 +9,14 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://pool-scoring-frontend.vercel.app',
-      'http://localhost:3000'
+      'http://localhost:3000',
+      'https://pool-scoring.vercel.app'
     ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+    exposedHeaders: ['Authorization'],
+    credentials: false,
+    optionsSuccessStatus: 204
   });
 
   // Use global validation pipe with transformation enabled
