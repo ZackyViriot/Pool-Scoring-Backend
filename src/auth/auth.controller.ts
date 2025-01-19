@@ -16,7 +16,15 @@ export class AuthController {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    return this.authService.login(user);
+    const result = await this.authService.login(user);
+    return {
+      ...result,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email
+      }
+    };
   }
 
   @Post('register')

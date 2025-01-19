@@ -31,9 +31,12 @@ export class MatchesController {
         throw new Error('No match data provided');
       }
 
-      if (!matchData.userId) {
-        throw new Error('userId is required');
+      // Get user id from JWT token
+      const userId = (request.user as any)?.userId;
+      if (!userId) {
+        throw new Error('User ID not found in token');
       }
+      matchData.userId = userId;
 
       if (!matchData.player1 || !matchData.player2) {
         throw new Error('Both player1 and player2 are required');
@@ -176,7 +179,7 @@ export class MatchesController {
       // Process the match data
       console.log('Step 5: Processing complete match data');
       const processedMatch = {
-        userId: matchData.userId,
+        userId: userId,
         gameType: matchData.gameType || '8-ball',
         player1: processPlayerInfo(matchData.player1, 1),
         player2: processPlayerInfo(matchData.player2, 2),
