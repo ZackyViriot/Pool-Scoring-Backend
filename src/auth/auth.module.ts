@@ -17,7 +17,7 @@ import { PaymentModule } from '../payment/payment.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '7d' },
+        signOptions: {},
       }),
       inject: [ConfigService],
     }),

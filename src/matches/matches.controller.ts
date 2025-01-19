@@ -68,8 +68,18 @@ export class MatchesController {
         action: String(turn.action || 'unknown'),
         timestamp: new Date(turn.timestamp || Date.now()),
         score: Number(turn.score) || 0,
-        inning: Number(turn.inning) || Math.floor(index / 2) + 1,
-        isBreak: Boolean(turn.isBreak)
+        inning: Number(turn.inning) || index + 1,
+        isBreak: Boolean(turn.isBreak) || false,
+        isScratch: Boolean(turn.isScratch) || false,
+        isSafetyPlay: Boolean(turn.isSafetyPlay) || false,
+        isDefensiveShot: Boolean(turn.isDefensiveShot) || false,
+        isFoul: Boolean(turn.isFoul) || false,
+        isBreakingFoul: Boolean(turn.isBreakingFoul) || false,
+        isIntentionalFoul: Boolean(turn.isIntentionalFoul) || false,
+        isMiss: Boolean(turn.isMiss) || false,
+        points: Number(turn.points) || 0,
+        actionText: String(turn.actionText || turn.action || 'unknown'),
+        actionColor: String(turn.actionColor || '#000000')
       }));
     };
 
@@ -90,12 +100,14 @@ export class MatchesController {
 
     // Process the match data
     const processedMatch = {
+      userId: matchData.userId,
+      gameType: matchData.gameType || '8-ball',
       player1: processPlayerInfo(matchData.player1),
       player2: processPlayerInfo(matchData.player2),
       player1Stats: processStats(matchData.player1Stats),
       player2Stats: processStats(matchData.player2Stats),
       innings: processInnings(matchData.innings),
-      matchDate: new Date(matchData.matchDate || Date.now()),
+      matchDate: new Date(),
       targetScore: Number(matchData.targetScore) || 0,
       duration: Number(matchData.duration) || 0,
       player1Score: Number(matchData.player1Score) || 0,

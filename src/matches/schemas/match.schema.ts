@@ -6,7 +6,7 @@ export class PlayerInfo {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ default: 0 })
+  @Prop({ required: true, default: 0 })
   handicap: number;
 }
 
@@ -72,16 +72,46 @@ export class Turn {
   @Prop({ required: true, default: 1 })
   inning: number;
 
-  @Prop({ default: false })
+  @Prop({ required: true, default: false })
   isBreak: boolean;
+
+  @Prop({ required: true, default: false })
+  isScratch: boolean;
+
+  @Prop({ required: true, default: false })
+  isSafetyPlay: boolean;
+
+  @Prop({ required: true, default: false })
+  isDefensiveShot: boolean;
+
+  @Prop({ required: true, default: false })
+  isFoul: boolean;
+
+  @Prop({ required: true, default: false })
+  isBreakingFoul: boolean;
+
+  @Prop({ required: true, default: false })
+  isIntentionalFoul: boolean;
+
+  @Prop({ required: true, default: false })
+  isMiss: boolean;
+
+  @Prop({ required: true })
+  points: number;
+
+  @Prop({ required: true })
+  actionText: string;
+
+  @Prop({ required: true })
+  actionColor: string;
 }
 
-@Schema({ timestamps: true })
-export class Match extends Document {
-  @Prop({ type: PlayerInfo, required: true })
+@Schema()
+export class Match {
+  @Prop({ required: true, type: PlayerInfo })
   player1: PlayerInfo;
 
-  @Prop({ type: PlayerInfo, required: true })
+  @Prop({ required: true, type: PlayerInfo })
   player2: PlayerInfo;
 
   @Prop({ required: true, default: 0 })
@@ -90,26 +120,33 @@ export class Match extends Document {
   @Prop({ required: true, default: 0 })
   player2Score: number;
 
-  @Prop({ type: PlayerInfo })
+  @Prop({ required: true, type: PlayerInfo })
   winner: PlayerInfo;
+
+  @Prop({ required: true })
+  gameType: string;
 
   @Prop({ required: true, default: 0 })
   duration: number;
 
-  @Prop({ type: PlayerStats, required: true })
+  @Prop({ required: true, type: PlayerStats })
   player1Stats: PlayerStats;
 
-  @Prop({ type: PlayerStats, required: true })
+  @Prop({ required: true, type: PlayerStats })
   player2Stats: PlayerStats;
 
-  @Prop({ type: [Turn], default: [] })
+  @Prop({ required: true, type: [Turn] })
   innings: Turn[];
 
-  @Prop({ required: true, default: Date.now })
+  @Prop({ required: true })
   matchDate: Date;
 
   @Prop({ required: true, default: 0 })
   targetScore: number;
+
+  @Prop({ required: true })
+  userId: string;
 }
 
+export type MatchDocument = Match & Document;
 export const MatchSchema = SchemaFactory.createForClass(Match); 
