@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Req, Delete } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { MatchesService } from './matches.service';
 import { Match, PlayerInfo, PlayerStats, Turn } from './schemas/match.schema';
@@ -224,5 +224,14 @@ export class MatchesController {
   @Get('player/:playerId')
   findByPlayer(@Param('playerId') playerId: string) {
     return this.matchesService.findByPlayer(playerId);
+  }
+
+  @Delete(':id')
+  async deleteMatch(@Param('id') id: string, @Req() request: Request) {
+    const userId = (request.user as any)?.userId;
+    if (!userId) {
+      throw new Error('User ID not found in token');
+    }
+    return this.matchesService.delete(id, userId);
   }
 } 

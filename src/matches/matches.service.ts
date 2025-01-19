@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Match } from './schemas/match.schema';
@@ -59,5 +59,16 @@ export class MatchesService {
 
   async findById(id: string): Promise<Match> {
     return this.matchModel.findById(id).exec();
+  }
+
+  async delete(id: string, userId: string): Promise<void> {
+    const match = await this.matchModel.findById(id);
+    if (!match) {
+      throw new NotFoundException('Match not found');
+    }
+    if (match.userId !== userId) {
+      throw new UnauthorizedException('Not authorized to delete this match');
+    }
+    await this.matchModel.findByIdAndDelete(id);
   }
 } 
