@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Req } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { MatchesService } from './matches.service';
 import { Match, PlayerInfo, PlayerStats, Turn } from './schemas/match.schema';
+import { Request } from 'express';
 
 @Controller('matches')
 @UseGuards(JwtAuthGuard)
@@ -9,8 +10,35 @@ export class MatchesController {
   constructor(private readonly matchesService: MatchesService) {}
 
   @Post()
-  async create(@Body() matchData: Partial<Match>) {
+  async create(@Body() matchData: Partial<Match>, @Req() request: Request) {
     try {
+      // Log request details
+      console.log('=== Request Details ===');
+      console.log('Headers:', JSON.stringify(request.headers, null, 2));
+      console.log('Method:', request.method);
+      console.log('URL:', request.url);
+      console.log('User:', request.user);
+      console.log('=== End Request Details ===\n');
+
+      // Log raw body before any processing
+      console.log('=== Raw Request Body ===');
+      console.log(JSON.stringify(request.body, null, 2));
+      console.log('=== End Raw Request Body ===\n');
+
+      // Validate required fields
+      console.log('Validating required fields...');
+      if (!matchData) {
+        throw new Error('No match data provided');
+      }
+
+      if (!matchData.userId) {
+        throw new Error('userId is required');
+      }
+
+      if (!matchData.player1 || !matchData.player2) {
+        throw new Error('Both player1 and player2 are required');
+      }
+
       console.log('Step 1: Received match data:', JSON.stringify(matchData, null, 2));
 
       // Process player stats
