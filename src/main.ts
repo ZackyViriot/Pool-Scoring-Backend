@@ -9,7 +9,8 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://pool-scoring-frontend.vercel.app',
-      'http://localhost:3000'
+      'http://localhost:3000',
+      'http://nckco4koo4kkg0wskow4ssog.85.31.224.91.sslip.io'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
