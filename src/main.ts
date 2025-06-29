@@ -5,13 +5,37 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Enable CORS for all origins during development
+  // Enable CORS with specific origins for production and development
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://nckco4koo4kkg0wskow4ssog.85.31.224.91.sslip.io',
+    'https://nckco4koo4kkg0wskow4ssog.85.31.224.91.sslip.io',
+    // Add any other frontend domains you need
+  ];
+
   app.enableCors({
-    origin: true, // Allow all origins for development
+    origin: function (origin, callback) {
+      console.log('CORS request from origin:', origin);
+      
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) {
+        console.log('Allowing request with no origin');
+        return callback(null, true);
+      }
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        console.log('Origin allowed:', origin);
+        callback(null, true);
+      } else {
+        console.log('CORS blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
     allowedHeaders: [
-      'Content-Type', 
+      'Content-Type',   
       'Accept', 
       'Authorization', 
       'X-Requested-With',
@@ -22,6 +46,12 @@ async function bootstrap() {
     exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
     preflightContinue: false,
     optionsSuccessStatus: 204,
+  });
+
+  // Add a global middleware to log all requests
+  app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
+    next();
   });
 
   // Use global validation pipe with transformation enabled
@@ -36,5 +66,6 @@ async function bootstrap() {
 
   await app.listen(8000);
   console.log('Application is running on port 8000');
+  console.log('CORS enabled for origins:', allowedOrigins);
 }
 bootstrap();
