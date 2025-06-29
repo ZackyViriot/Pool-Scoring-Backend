@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Enable CORS with specific origins for production and development
   const allowedOrigins = [
     'http://localhost:3000',
@@ -12,31 +12,36 @@ async function bootstrap() {
     'http://nckco4koo4kkg0wskow4ssog.85.31.224.91.sslip.io',
     'http://b0cwgosscocoskkggsgs804w.85.31.224.91.sslip.io',
     'https://b0cwgosscocoskkggsgs804w.85.31.224.91.sslip.io',
-
   ];
 
   app.enableCors({
     origin: function (origin, callback) {
       console.log('CORS request from origin:', origin);
-      
+
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) {
         console.log('Allowing request with no origin');
         return callback(null, true);
       }
-      
-     
+
+      if (allowedOrigins.includes(origin)) {
+        console.log('Origin allowed:', origin);
+        return callback(null, true);
+      } else {
+        console.log('Origin NOT allowed:', origin);
+        return callback(new Error('Not allowed by CORS'));
+      }
     },
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
     allowedHeaders: [
-      'Content-Type',   
-      'Accept', 
-      'Authorization', 
+      'Content-Type',
+      'Accept',
+      'Authorization',
       'X-Requested-With',
       'Origin',
       'Access-Control-Request-Method',
-      'Access-Control-Request-Headers'
+      'Access-Control-Request-Headers',
     ],
     exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
     preflightContinue: false,
@@ -45,7 +50,9 @@ async function bootstrap() {
 
   // Add a global middleware to log all requests
   app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
+    console.log(
+      `${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`,
+    );
     next();
   });
 
