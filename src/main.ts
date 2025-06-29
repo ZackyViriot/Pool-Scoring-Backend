@@ -10,12 +10,9 @@ async function bootstrap() {
     'http://localhost:3000',
     'http://localhost:3001',
     'http://nckco4koo4kkg0wskow4ssog.85.31.224.91.sslip.io',
-    'https://nckco4koo4kkg0wskow4ssog.85.31.224.91.sslip.io',
     'http://b0cwgosscocoskkggsgs804w.85.31.224.91.sslip.io',
     'https://b0cwgosscocoskkggsgs804w.85.31.224.91.sslip.io',
-    // Allow all subdomains of sslip.io for flexibility
-    /^https?:\/\/.*\.85\.31\.224\.91\.sslip\.io$/,
-    // Add any other frontend domains you need
+
   ];
 
   app.enableCors({
@@ -28,23 +25,7 @@ async function bootstrap() {
         return callback(null, true);
       }
       
-      // Check if origin matches any of the allowed origins (including regex patterns)
-      const isAllowed = allowedOrigins.some(allowedOrigin => {
-        if (typeof allowedOrigin === 'string') {
-          return allowedOrigin === origin;
-        } else if (allowedOrigin instanceof RegExp) {
-          return allowedOrigin.test(origin);
-        }
-        return false;
-      });
-      
-      if (isAllowed) {
-        console.log('Origin allowed:', origin);
-        callback(null, true);
-      } else {
-        console.log('CORS blocked origin:', origin);
-        callback(new Error('Not allowed by CORS'));
-      }
+     
     },
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
