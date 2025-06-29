@@ -5,8 +5,13 @@ services:
     build: .
     ports:
       - "8000:8000"
+      - "443:443"  # HTTPS port
     environment:
       - NODE_ENV=production
       - MONGODB_URI=${MONGODB_URI}
       - JWT_SECRET=${JWT_SECRET}
+      - SSL_KEY_PATH=/etc/ssl/private/ssl-cert-snakeoil.key
+      - SSL_CERT_PATH=/etc/ssl/certs/ssl-cert-snakeoil.pem
+    volumes:
+      - /etc/ssl:/etc/ssl:ro  # Mount SSL certificates
     restart: unless-stopped 
