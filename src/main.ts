@@ -7,11 +7,15 @@ async function bootstrap() {
   
   // Enable CORS
   app.enableCors({
-    origin: '*', // In production, change this to your frontend URL
+    origin: [
+      'https://poolscoring.com',
+      'https://www.poolscoring.com',
+      'http://localhost:3000', // Keep localhost for development
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-
+ 
   // Add a global middleware to log all requests
   app.use((req, res, next) => {
     console.log(
