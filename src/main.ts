@@ -7,19 +7,21 @@ async function bootstrap() {
   
   // Enable CORS for all origins during development
   app.enableCors({
-    origin: [
-      'https://pool-scoring-frontend.vercel.app',
-      'http://localhost:3000',
-      'http://nckco4koo4kkg0wskow4ssog.85.31.224.91.sslip.io',
-      'http://b0cwgosscocoskkggsgs804w.85.31.224.91.sslip.io',
-      // Allow all sslip.io subdomains
-      /^https?:\/\/.*\.sslip\.io$/,
-      // Allow localhost for development
-      /^https?:\/\/localhost:\d+$/
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin: true, // Allow all origins for development
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type', 
+      'Accept', 
+      'Authorization', 
+      'X-Requested-With',
+      'Origin',
+      'Access-Control-Request-Method',
+      'Access-Control-Request-Headers'
+    ],
+    exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
   // Use global validation pipe with transformation enabled
