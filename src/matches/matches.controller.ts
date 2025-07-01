@@ -212,8 +212,12 @@ export class MatchesController {
   }
 
   @Get()
-  findAll() {
-    return this.matchesService.findAll();
+  findAll(@Req() request: Request) {
+    const userId = (request.user as any)?.userId;
+    if (!userId) {
+      throw new Error('User ID not found in token');
+    }
+    return this.matchesService.findAllByUser(userId);
   }
 
   @Get(':id')

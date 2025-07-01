@@ -45,6 +45,13 @@ export class MatchesService {
       .exec();
   }
 
+  async findAllByUser(userId: string): Promise<Match[]> {
+    return this.matchModel
+      .find({ userId })
+      .sort({ matchDate: -1 })
+      .exec();
+  }
+
   async findByPlayer(playerId: string): Promise<Match[]> {
     return this.matchModel
       .find({
