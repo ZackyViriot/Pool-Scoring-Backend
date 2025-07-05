@@ -40,21 +40,35 @@ export class AuthService {
   }
 
   async register(email: string, password: string, name: string, paymentIntentId: string) {
-    // Verify payment was successful
-    const paymentConfirmed = await this.paymentService.confirmPayment(paymentIntentId);
-    if (!paymentConfirmed) {
-      throw new UnauthorizedException('Payment verification failed');
+    try {
+      console.log('Starting registration for:', email, 'with payment intent:', paymentIntentId);
+      
+      // Verify payment was successful
+      const paymentConfirmed = await this.paymentService.confirmPayment(paymentIntentId);
+      if (!paymentConfirmed) {
+        console.log('Payment verification failed for payment intent:', paymentIntentId);
+        throw new UnauthorizedException('Payment verification failed. Please ensure your payment was successful and try again.');
+      }
+
+      console.log('Payment verified successfully, creating user account');
+      
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = await this.usersService.create({
+        email,
+        password: hashedPassword,
+        name,
+        hasPaid: true,
+      });
+
+      console.log('User account created successfully:', user.email);
+      const { password: _, ...result } = user.toObject();
+      return result;
+    } catch (error) {
+      console.error('Registration error:', error);
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('Registration failed. Please try again.');
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.usersService.create({
-      email,
-      password: hashedPassword,
-      name,
-      hasPaid: true,
-    });
-
-    const { password: _, ...result } = user.toObject();
-    return result;
   }
 } 

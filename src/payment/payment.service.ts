@@ -38,12 +38,48 @@ export class PaymentService {
   async confirmPayment(paymentIntentId: string): Promise<boolean> {
     try {
       console.log('Confirming payment intent:', paymentIntentId);
+      
+      if (!paymentIntentId || paymentIntentId.trim() === '') {
+        console.error('Payment intent ID is empty or invalid');
+        return false;
+      }
+      
+      // Try to retrieve the payment intent
       const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
+      console.log('Payment intent status:', paymentIntent.status);
+      console.log('Payment intent amount:', paymentIntent.amount);
+      console.log('Payment intent currency:', paymentIntent.currency);
+      
+      // Check if the payment was successful
       const isSuccessful = paymentIntent.status === 'succeeded';
-      console.log('Payment status:', paymentIntent.status);
-      return isSuccessful;
+      
+      if (isSuccessful) {
+        console.log('Payment confirmed successfully');
+        return true;
+      } else {
+        console.log('Payment not successful, status:', paymentIntent.status);
+        return false;
+      }
     } catch (error) {
       console.error('Error confirming payment:', error);
+      
+      // If the payment intent doesn't exist, it might have already been confirmed
+      // or there might be an issue with the ID
+      if (error.code === 'resource_missing') {
+        console.log('Payment intent not found, it may have already been confirmed');
+        // You might want to return true here if you're confident the payment was processed
+        // For now, we'll return false to be safe
+        return false;
+      }
+      
+      // Log additional error details
+      if (error.type) {
+        console.log('Stripe error type:', error.type);
+      }
+      if (error.param) {
+        console.log('Stripe error param:', error.param);
+      }
+      
       return false;
     }
   }
