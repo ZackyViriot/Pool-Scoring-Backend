@@ -10,6 +10,7 @@ services:
       - NODE_ENV=production
       - MONGODB_URI=${MONGODB_URI}
       - JWT_SECRET=${JWT_SECRET}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - SSL_KEY_PATH=/etc/ssl/private/ssl-cert-snakeoil.key
       - SSL_CERT_PATH=/etc/ssl/certs/ssl-cert-snakeoil.pem
     volumes:
