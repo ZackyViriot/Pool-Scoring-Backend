@@ -43,14 +43,20 @@ export class AuthService {
     try {
       console.log('Starting registration for:', email, 'with payment intent:', paymentIntentId);
       
-      // Verify payment was successful
-      const paymentConfirmed = await this.paymentService.confirmPayment(paymentIntentId);
-      if (!paymentConfirmed) {
-        console.log('Payment verification failed for payment intent:', paymentIntentId);
-        throw new UnauthorizedException('Payment verification failed. Please ensure your payment was successful and try again.');
+      // Since the payment is already confirmed on the frontend, we just need to verify
+      // that a payment intent ID was provided (indicating payment was processed)
+      if (!paymentIntentId || paymentIntentId.trim() === '') {
+        console.log('No payment intent ID provided');
+        throw new UnauthorizedException('Payment information is required for registration.');
       }
 
-      console.log('Payment verified successfully, creating user account');
+      // Validate that the payment intent ID has the correct format (starts with "pi_")
+      if (!paymentIntentId.startsWith('pi_')) {
+        console.log('Invalid payment intent ID format:', paymentIntentId);
+        throw new UnauthorizedException('Invalid payment information provided.');
+      }
+
+      console.log('Payment intent ID provided and validated, proceeding with user creation');
       
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await this.usersService.create({

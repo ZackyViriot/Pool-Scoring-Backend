@@ -1,6 +1,7 @@
 import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { PaymentService } from '../payment/payment.service';
+import { RegisterDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,23 +29,39 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() registerDto: { 
-    email: string; 
-    password: string; 
-    name: string; 
-    paymentIntentId: string;
-  }) {
-    console.log('Registration attempt for:', registerDto.email);
-    return this.authService.register(
-      registerDto.email,
-      registerDto.password,
-      registerDto.name,
-      registerDto.paymentIntentId,
-    );
+  async register(@Body() registerDto: RegisterDto) {
+    console.log('Registration request received for:', registerDto.email);
+    console.log('Payment intent ID:', registerDto.paymentIntentId);
+    console.log('Request body:', JSON.stringify(registerDto, null, 2));
+    
+    try {
+      const result = await this.authService.register(
+        registerDto.email,
+        registerDto.password,
+        registerDto.name,
+        registerDto.paymentIntentId,
+      );
+      console.log('Registration successful for:', registerDto.email);
+      return result;
+    } catch (error) {
+      console.error('Registration failed for:', registerDto.email, 'Error:', error.message);
+      
+      // If it's a validation error, provide more specific feedback
+      if (error.message && error.message.includes('validation')) {
+        throw new UnauthorizedException('Invalid registration data. Please check your information and try again.');
+      }
+      
+      throw error;
+    }
   }
 
   @Post('create-payment-intent')
   async createPaymentIntent() {
     return this.paymentService.createPaymentIntent();
+  }
+
+  @Post('test')
+  async test() {
+    return { message: 'Auth controller is working', timestamp: new Date().toISOString() };
   }
 } 

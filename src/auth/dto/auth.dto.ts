@@ -21,6 +21,7 @@ export class RegisterDto {
   @IsNotEmpty()
   name: string;
 
+  @IsString()
   @IsNotEmpty()
-  paymentInfo: any;
+  paymentIntentId: string;
 } 
