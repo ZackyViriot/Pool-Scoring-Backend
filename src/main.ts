@@ -32,11 +32,17 @@ async function bootstrap() {
     credentials: true,
   });
  
-  // Add a global middleware to log all requests
+  // Add a global middleware to log all requests and set cache headers
   app.use((req, res, next) => {
     console.log(
       `${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`,
     );
+    
+    // Set cache-busting headers for API responses
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    
     next();
   });
 

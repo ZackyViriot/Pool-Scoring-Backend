@@ -4,7 +4,7 @@ FROM node:18-alpine
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package.json and package-lock.json first for better caching
 COPY package*.json ./
 
 # Install dependencies
