@@ -26,7 +26,7 @@ export class PaymentService {
       
       // Create a one-time payment
       const paymentIntent = await this.stripe.paymentIntents.create({
-        amount: 1000, // $10.00 in cents
+        amount: 2000, // $20.00 in cents
         currency: 'usd',
       });
       console.log('Created one-time payment intent:', paymentIntent.id);

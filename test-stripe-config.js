@@ -15,7 +15,7 @@ if (testKey) {
   
   // Try to create a test payment intent
   testStripe.paymentIntents.create({
-    amount: 1000,
+    amount: 2000,
     currency: 'usd',
   })
   .then(intent => {
@@ -38,7 +38,7 @@ if (liveKey) {
   
   // Try to create a live payment intent
   liveStripe.paymentIntents.create({
-    amount: 1000,
+    amount: 2000,
     currency: 'usd',
   })
   .then(intent => {
