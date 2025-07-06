@@ -1,14 +1,19 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 
 @Injectable()
 export class PaymentService {
   private stripe: Stripe;
 
-  constructor(private configService: ConfigService) {
-    const stripeKey = this.configService.get<string>('STRIPE_SECRET_KEY');
+  constructor() {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    
     console.log('Initializing Stripe with key:', stripeKey ? 'present' : 'missing');
+    
+    if (!stripeKey) {
+      console.error('No Stripe secret key found. Please set STRIPE_SECRET_KEY in your .env file');
+      throw new Error('Stripe secret key is required but not found in environment variables');
+    }
     
     this.stripe = new Stripe(stripeKey, {
       apiVersion: '2024-12-18.acacia',
